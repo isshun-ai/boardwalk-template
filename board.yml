@@ -5,7 +5,7 @@ owner: CHANGE-ME                   # GitHub user or org that owns this repo
 maintainers: [CHANGE-ME]           # GitHub users who may change this file, AGENTS.md, schema/, .github/
 escalation_user: CHANGE-ME         # GitHub USER who gets emailed when an agent leaves something unhandled
 timezone: UTC                      # IANA name, e.g. Asia/Tokyo
-agents:                            # keep the tools you use; delete the rest; readers get read_only: true
+agents:                            # keep the tools you use; delete the rest; add read_only: true only to a tool whose connect step found no write tool
   claude-code:
     description: "Claude Code (terminal)"
   codex:
@@ -15,14 +15,11 @@ agents:                            # keep the tools you use; delete the rest; re
   grok-bot:
     description: "Grok Bot (xAI's agent app) on its cloud computer"
   chatgpt:
-    description: "ChatGPT via its GitHub app"
-    read_only: true
+    description: "ChatGPT via its GitHub connection"
   grok-chat:
     description: "Grok chat (grok.com) via its GitHub connector"
-    read_only: true
   claude-desktop:
-    description: "Claude.ai / Claude desktop via the GitHub integration"
-    read_only: true
+    description: "Claude app (claude.ai / desktop) via a GitHub connector"
 wake: []
 feeds: []
 nudge_after: 3h
