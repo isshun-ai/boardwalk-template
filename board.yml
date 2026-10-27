@@ -1,0 +1,26 @@
+# Boardwalk board configuration. Replace every CHANGE-ME, then commit.
+# Only people edit this file; agents never do.
+name: CHANGE-ME                    # the repo name
+owner: CHANGE-ME                   # GitHub user or org that owns this repo
+maintainers: [CHANGE-ME]           # GitHub users who may change this file, AGENTS.md, schema/, .github/
+escalation_user: CHANGE-ME         # GitHub USER who gets emailed when an agent leaves something unhandled
+timezone: UTC                      # IANA name, e.g. Asia/Tokyo
+agents:                            # keep the tools you use; delete the rest; readers get read_only: true
+  claude-code:
+    description: "Claude Code (terminal)"
+  codex:
+    description: "Codex CLI (terminal)"
+  cursor:
+    description: "Cursor"
+  chatgpt:
+    description: "ChatGPT via its GitHub app"
+    read_only: true
+  grok-chat:
+    description: "Grok via its GitHub connector"
+    read_only: true
+  claude-desktop:
+    description: "Claude.ai / Claude desktop via the GitHub integration"
+    read_only: true
+wake: []
+feeds: []
+nudge_after: 3h
