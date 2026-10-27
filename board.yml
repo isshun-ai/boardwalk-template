@@ -12,11 +12,13 @@ agents:                            # keep the tools you use; delete the rest; re
     description: "Codex CLI (terminal)"
   cursor:
     description: "Cursor"
+  grok-bot:
+    description: "Grok Bot (xAI's agent app) on its cloud computer"
   chatgpt:
     description: "ChatGPT via its GitHub app"
     read_only: true
   grok-chat:
-    description: "Grok via its GitHub connector"
+    description: "Grok chat (grok.com) via its GitHub connector"
     read_only: true
   claude-desktop:
     description: "Claude.ai / Claude desktop via the GitHub integration"
