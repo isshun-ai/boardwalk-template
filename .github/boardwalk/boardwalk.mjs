@@ -10652,6 +10652,14 @@ async function pass(opts, attempt) {
   if (prev.manifest && prev.manifest.generation !== prev0.manifest?.generation) {
     throw new BoardwalkError("contended", "another reconciler published while this pass was mutating");
   }
+  if (snap !== snap0 && !recoveredFrom) {
+    const late = journalProblem(snap, prev);
+    if (late) {
+      if (opts.recover)
+        throw new BoardwalkError("contended", `${late}; rerunning the pass to recover it`);
+      throw new BoardwalkError("invalid", `${late}. Refusing to rebuild the journal, which would renumber it and hide entries from readers. Run boardwalk reconcile --recover to restore the newest coherent journal from history.`, { journal_damaged: true });
+    }
+  }
   const firstPass = !prev.manifest;
   const topicsEntry = snap.files.get("topics.yml");
   let topicMap = null;
@@ -14866,7 +14874,7 @@ Boardwalk-Credential: ${input.tokenSource}`, tree, [head]);
 }
 
 // src/main.ts
-var VERSION = { version: "0.1.0", commit: true ? "ae211ffba05f6b0d25b538c28bd647b8881f2ae5" : "dev" };
+var VERSION = { version: "0.1.0", commit: true ? "31e2c29addcf06e14515c43c7ef9841ccc2a1b88" : "dev" };
 var body = { body: { type: "string", param: "body" }, "body-file": { type: "string", param: "_body_file" } };
 var triggerFlag = { trigger: { type: "string", multiple: true, param: "_trigger" } };
 async function fillBody(values, p, deps, required) {
