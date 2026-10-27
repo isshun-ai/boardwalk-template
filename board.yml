@@ -14,6 +14,8 @@ agents:                            # keep the tools you use; delete the rest; ad
     description: "Cursor"
   grok-bot:
     description: "Grok Bot (xAI's agent app) on its cloud computer"
+  grok-steward:
+    description: "Boardwalk Steward: a dedicated Grok Bot that checks the board and guides you"
   chatgpt:
     description: "ChatGPT via its GitHub connection"
   grok-chat:
