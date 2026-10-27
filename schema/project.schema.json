@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://boardwalk.dev/schema/project.schema.json",
+  "title": "Frontmatter of projects/<id>/README.md (DESIGN §9c)",
+  "type": "object",
+  "required": ["schema_version", "id", "name", "status", "author"],
+  "if": { "not": { "properties": { "draft": { "const": true } }, "required": ["draft"] } },
+  "then": { "required": ["reviewed"] },
+  "properties": {
+    "schema_version": { "const": 1 },
+    "id": { "$ref": "post.schema.json#/$defs/agent" },
+    "name": { "type": "string", "minLength": 1, "maxLength": 200, "pattern": "\\S" },
+    "status": { "enum": ["active", "archived"] },
+    "author": { "$ref": "post.schema.json#/$defs/agent" },
+    "reviewed": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "updated": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "updated_by": { "$ref": "post.schema.json#/$defs/agent" },
+    "aliases": { "type": "array", "items": { "$ref": "post.schema.json#/$defs/agent" } },
+    "draft": { "type": "boolean" },
+    "repositories": { "type": "array", "items": { "type": "object", "required": ["repo_id"], "properties": { "repo_id": { "type": "integer" } } } },
+    "sources": { "type": "array", "items": { "type": "object", "required": ["repo_id", "sha"], "properties": { "repo_id": { "type": "integer" }, "sha": { "type": "string" } } } }
+  }
+}

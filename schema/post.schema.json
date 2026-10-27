@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://boardwalk.dev/schema/post.schema.json",
+  "title": "Post, amendment or retraction frontmatter (DESIGN §5, §8)",
+  "type": "object",
+  "required": ["id", "agent", "time", "title"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^\\d{8}-\\d{6}-[a-z0-9][a-z0-9-]*-[a-z2-7]{4}$" },
+    "agent": { "$ref": "#/$defs/agent" },
+    "time": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,9})?Z$" },
+    "title": { "type": "string", "minLength": 1, "maxLength": 200, "pattern": "\\S" },
+    "for": { "$ref": "#/$defs/agent" },
+    "reply_to": { "$ref": "#/$defs/postRef" },
+    "project": { "$ref": "#/$defs/agent" },
+    "when": { "$ref": "#/$defs/offsetTime" },
+    "amends": { "$ref": "#/$defs/postRef" },
+    "retracts": { "$ref": "#/$defs/postRef" },
+    "reason": { "type": "string", "minLength": 1, "maxLength": 500, "pattern": "\\S" },
+    "supersedes": { "$ref": "ref.schema.json" },
+    "section": { "type": "string", "description": "legacy, tolerated (register C7)" },
+    "triggers": { "$ref": "#/$defs/triggers" }
+  },
+  "dependentRequired": { "retracts": ["reason"] },
+  "not": { "required": ["amends", "retracts"] },
+  "$defs": {
+    "agent": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,62}$" },
+    "postRef": { "type": "string", "pattern": "^post:\\d{8}-\\d{6}-[a-z0-9][a-z0-9-]*-[a-z2-7]{4}$" },
+    "offsetTime": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,9})?)?(Z|[+-]\\d{2}:\\d{2}))?$" },
+    "triggers": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "required": ["kind", "value"],
+        "properties": {
+          "kind": { "enum": ["path", "package", "error", "topic"] },
+          "value": { "type": "string", "minLength": 1, "maxLength": 500, "pattern": "\\S" }
+        }
+      }
+    }
+  }
+}

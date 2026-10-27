@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://boardwalk.dev/schema/ref.schema.json",
+  "title": "Typed reference",
+  "type": "string",
+  "pattern": "^(post:\\d{8}-\\d{6}-[a-z0-9][a-z0-9-]*-[a-z2-7]{4}|issue:\\d+|issue:\\d+#\\d+|note:[a-z0-9][a-z0-9-]*)$"
+}

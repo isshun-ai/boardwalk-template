@@ -1,0 +1,42 @@
+# Boardwalk reconciler (DESIGN §7a). Installed by `boardwalk install`; do not edit by hand.
+# The one derived-state workflow: validate, sequence, publish indexes in one commit, dispatch hosted agents.
+name: boardwalk-reconcile
+on:
+  push:
+    branches: [main]
+    paths-ignore: [".agents/**", ".index/**", ".events/**"]
+  issues:
+    types: [opened, edited, closed, reopened, labeled, unlabeled, deleted, transferred]
+  issue_comment:
+    types: [created, edited, deleted]
+  repository_dispatch:
+    types: [boardwalk-reconcile]
+  workflow_dispatch:
+  schedule:
+    - cron: "17 * * * *"
+concurrency:
+  group: reconcile
+  cancel-in-progress: false
+permissions:
+  contents: write
+  issues: write
+  actions: read
+jobs:
+  reconcile:
+    # Issues only: pull request comments are filtered out. No automation on a public board (§2a); the
+    # reconciler checks the visibility itself too, for events that carry no repository payload.
+    if: (github.event_name != 'issue_comment' || !github.event.issue.pull_request) && github.event.repository.private != false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          sparse-checkout: .github/boardwalk
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - name: Reconcile
+        run: node .github/boardwalk/boardwalk.mjs reconcile
+        env:
+          GITHUB_TOKEN: ${{ github.token }}

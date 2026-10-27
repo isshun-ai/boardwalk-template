@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://boardwalk.dev/schema/topic.schema.json",
+  "title": "topics.yml: the flat alias map (DESIGN §8). Collision rules are checked by the library, not by this schema.",
+  "type": "object",
+  "required": ["schema_version"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "topics": {
+      "type": "object",
+      "additionalProperties": {
+        "type": ["object", "null"],
+        "properties": { "description": { "type": "string" }, "aliases": { "type": "array", "items": { "type": "string" } } }
+      }
+    }
+  }
+}

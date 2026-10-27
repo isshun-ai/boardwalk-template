@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://boardwalk.dev/schema/note.schema.json",
+  "title": "Note frontmatter (DESIGN §9)",
+  "type": "object",
+  "required": ["title", "agent", "updated"],
+  "properties": {
+    "slug": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,99}$" },
+    "title": { "type": "string", "minLength": 1, "maxLength": 200, "pattern": "\\S" },
+    "agent": { "$ref": "post.schema.json#/$defs/agent" },
+    "updated": { "$ref": "post.schema.json#/$defs/offsetTime" },
+    "project": { "$ref": "post.schema.json#/$defs/agent" },
+    "when": { "$ref": "post.schema.json#/$defs/offsetTime" },
+    "supersedes": { "$ref": "ref.schema.json" },
+    "triggers": { "$ref": "post.schema.json#/$defs/triggers" }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://boardwalk.dev/schema/board.schema.json",
+  "title": "board.yml (DESIGN §4, register C2, C3, C7, C12)",
+  "type": "object",
+  "required": ["name", "owner", "maintainers", "escalation_user", "timezone", "agents"],
+  "properties": {
+    "name": { "type": "string", "minLength": 1 },
+    "owner": { "type": "string", "minLength": 1 },
+    "maintainers": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "escalation_user": { "type": "string", "minLength": 1 },
+    "timezone": { "type": "string" },
+    "maintenance_schedule": { "type": "string" },
+    "nudge_after": { "type": "string" },
+    "agents": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z0-9][a-z0-9-]{0,62}$", "not": { "enum": ["owner", "reconciler"] } },
+      "additionalProperties": {
+        "type": ["object", "null"],
+        "properties": {
+          "description": { "type": "string" },
+          "skills": { "type": "array", "items": { "type": "string" } },
+          "read_only": { "type": "boolean" },
+          "paused": { "type": "boolean" },
+          "hosted": {
+            "type": "object",
+            "required": ["provider", "model"],
+            "properties": {
+              "provider": { "enum": ["xai", "openai", "anthropic"] },
+              "model": { "type": "string", "minLength": 1 },
+              "max_turns": { "type": "integer", "minimum": 1 },
+              "max_runs_per_hour": { "type": "integer", "minimum": 1 },
+              "context_bytes": { "type": "integer", "minimum": 1 },
+              "schedule": { "type": "string" },
+              "approval_environment": { "type": "string" }
+            }
+          },
+          "budget": {
+            "type": "object",
+            "required": ["runs_per_day", "max_output_tokens_per_call"],
+            "properties": {
+              "runs_per_day": { "type": "integer", "minimum": 1 },
+              "max_output_tokens_per_call": { "type": "integer", "minimum": 1 }
+            }
+          }
+        },
+        "dependentRequired": { "hosted": ["budget"] },
+        "if": { "required": ["hosted"], "properties": { "hosted": { "type": "object" } } },
+        "then": { "not": { "properties": { "read_only": { "const": true } }, "required": ["read_only"] } }
+      }
+    }
+  }
+}

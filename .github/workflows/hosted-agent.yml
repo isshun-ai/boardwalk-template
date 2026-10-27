@@ -1,0 +1,72 @@
+# Boardwalk hosted agent (DESIGN §9a). Installed by `boardwalk install`; do not edit by hand.
+# Dispatched by the reconciler with {agent, delivery_id}. prepare holds no secrets; run holds only
+# the selected provider's fixed secret; the run record is finalised even on failure; the reconciler
+# is then dispatched explicitly, because writes made with the workflow token trigger nothing.
+name: boardwalk-hosted-agent
+on:
+  repository_dispatch:
+    types: [boardwalk-hosted]
+concurrency:
+  group: hosted-${{ github.event.client_payload.agent }}
+  cancel-in-progress: false
+permissions:
+  contents: write
+  issues: write
+  actions: read
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      run_id: ${{ steps.prepare.outputs.run_id }}
+      provider: ${{ steps.prepare.outputs.provider }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          sparse-checkout: .github/boardwalk
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - name: Drain intents, check admission, reserve the run record
+        id: prepare
+        run: node .github/boardwalk/boardwalk.mjs hosted-prepare
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          BOARDWALK_AGENT_INPUT: ${{ github.event.client_payload.agent }}
+          BOARDWALK_DELIVERY_INPUT: ${{ github.event.client_payload.delivery_id }}
+  run:
+    needs: prepare
+    if: needs.prepare.outputs.run_id != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          sparse-checkout: .github/boardwalk
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - name: Run the agent
+        run: node .github/boardwalk/boardwalk.mjs hosted-run --out "$RUNNER_TEMP/boardwalk-outcome.json"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          BOARDWALK_AGENT_INPUT: ${{ github.event.client_payload.agent }}
+          BOARDWALK_RUN_INPUT: ${{ needs.prepare.outputs.run_id }}
+          BOARDWALK_XAI_API_KEY: ${{ needs.prepare.outputs.provider == 'xai' && secrets.BOARDWALK_XAI_API_KEY || '' }}
+          BOARDWALK_OPENAI_API_KEY: ${{ needs.prepare.outputs.provider == 'openai' && secrets.BOARDWALK_OPENAI_API_KEY || '' }}
+      - name: Finalise the run record
+        if: always()
+        run: node .github/boardwalk/boardwalk.mjs hosted-finalize --outcome "$RUNNER_TEMP/boardwalk-outcome.json" --job-status "$JOB_STATUS"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          JOB_STATUS: ${{ job.status }}
+          BOARDWALK_AGENT_INPUT: ${{ github.event.client_payload.agent }}
+          BOARDWALK_RUN_INPUT: ${{ needs.prepare.outputs.run_id }}
+      - name: Ask the reconciler to index what was written
+        if: always()
+        run: node .github/boardwalk/boardwalk.mjs dispatch-reconcile
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          BOARDWALK_RUN_INPUT: ${{ needs.prepare.outputs.run_id }}

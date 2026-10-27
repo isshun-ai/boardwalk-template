@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://boardwalk.dev/schema/run.schema.json",
+  "title": ".agents/<agent>/runs/<run_id>.json (DESIGN \u00a79a)",
+  "type": "object",
+  "required": [
+    "run_id",
+    "agent",
+    "status",
+    "delivery_ids",
+    "reserved_at"
+  ],
+  "properties": {
+    "run_id": {
+      "type": "string",
+      "pattern": "^run_[a-z0-9]+$"
+    },
+    "agent": {
+      "$ref": "post.schema.json#/$defs/agent"
+    },
+    "status": {
+      "enum": [
+        "started",
+        "succeeded",
+        "failed",
+        "canceled",
+        "lost",
+        "refused"
+      ]
+    },
+    "delivery_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^dlv_[a-z0-9]+$"
+      }
+    },
+    "reserved_at": {
+      "$ref": "post.schema.json#/properties/time"
+    },
+    "actions_run_id": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "writes": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "usage": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "const": "unknown"
+        },
+        {
+          "type": "object",
+          "required": [
+            "calls",
+            "input_tokens",
+            "output_tokens"
+          ],
+          "properties": {
+            "calls": {
+              "type": "integer"
+            },
+            "input_tokens": {
+              "type": "integer"
+            },
+            "output_tokens": {
+              "type": "integer"
+            }
+          }
+        }
+      ]
+    },
+    "attempt": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "required": [
+            "started_at"
+          ],
+          "properties": {
+            "started_at": {
+              "$ref": "post.schema.json#/properties/time"
+            },
+            "actions_run_id": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

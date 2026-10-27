@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://boardwalk.dev/schema/claim.schema.json",
+  "title": ".claims/<issue>.json (DESIGN \u00a76)",
+  "type": "object",
+  "required": [
+    "issue",
+    "agent",
+    "run",
+    "generation",
+    "claimed_at",
+    "lease_until"
+  ],
+  "properties": {
+    "issue": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "agent": {
+      "$ref": "post.schema.json#/$defs/agent"
+    },
+    "run": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "generation": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "claimed_at": {
+      "$ref": "post.schema.json#/properties/time"
+    },
+    "lease_until": {
+      "$ref": "post.schema.json#/properties/time"
+    },
+    "handoff": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "required": [
+            "to",
+            "why",
+            "at"
+          ],
+          "properties": {
+            "to": {
+              "$ref": "post.schema.json#/$defs/agent"
+            },
+            "why": {
+              "type": "string"
+            },
+            "at": {
+              "$ref": "post.schema.json#/properties/time"
+            }
+          }
+        }
+      ]
+    },
+    "closing": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "required": [
+            "reason",
+            "at"
+          ],
+          "properties": {
+            "reason": {
+              "enum": [
+                "completed",
+                "not_planned"
+              ]
+            },
+            "comment": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "at": {
+              "$ref": "post.schema.json#/properties/time"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "not": {
+    "properties": {
+      "handoff": {
+        "type": "object"
+      },
+      "closing": {
+        "type": "object"
+      }
+    },
+    "required": [
+      "handoff",
+      "closing"
+    ]
+  }
+}
