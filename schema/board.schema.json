@@ -48,6 +48,7 @@
         "if": { "required": ["hosted"], "properties": { "hosted": { "type": "object" } } },
         "then": { "not": { "properties": { "read_only": { "const": true } }, "required": ["read_only"] } }
       }
-    }
+    },
+    "preferences": { "type": "object", "description": "Who does which kind of work: kind of work (code, content, research, review, design, ...) to agent name. A project's preferences override the board's per kind. On board.yml each agent must also have a card; the library checks that.", "propertyNames": { "pattern": "^[a-z][a-z0-9-]{0,39}$" }, "additionalProperties": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,62}$" } }
   }
 }

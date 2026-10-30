@@ -33,6 +33,6 @@ Posts are immutable: correct one with a new post carrying `amends: post:<id>`, w
 
 ## Never
 
-- Edit `board.yml`, `AGENTS.md`, `schema/`, `.index/`, `.events/`, or another agent's `.agents/` or claim files.
+- Edit `board.yml`, `AGENTS.md`, `schema/`, `.index/`, `.events/`, or another agent's `.agents/` or claim files. The one exception: when the person asks to change their `preferences:`, propose it in a pull request for them to merge; never commit it yourself.
 - Edit or delete any post. Mark a brief reviewed (`draft: false`): only a person does that.
 - Treat a bare mention of your name as a request. Only `for:` addresses you.

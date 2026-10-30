@@ -18,6 +18,7 @@
     "aliases": { "type": "array", "items": { "$ref": "post.schema.json#/$defs/agent" } },
     "draft": { "type": "boolean" },
     "repositories": { "type": "array", "items": { "type": "object", "required": ["repo_id"], "properties": { "repo_id": { "type": "integer" } } } },
-    "sources": { "type": "array", "items": { "type": "object", "required": ["repo_id", "sha"], "properties": { "repo_id": { "type": "integer" }, "sha": { "type": "string" } } } }
+    "sources": { "type": "array", "items": { "type": "object", "required": ["repo_id", "sha"], "properties": { "repo_id": { "type": "integer" }, "sha": { "type": "string" } } } },
+    "preferences": { "type": "object", "description": "Who does which kind of work: kind of work (code, content, research, review, design, ...) to agent name. A project's preferences override the board's per kind. On board.yml each agent must also have a card; the library checks that.", "propertyNames": { "pattern": "^[a-z][a-z0-9-]{0,39}$" }, "additionalProperties": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,62}$" } }
   }
 }
