@@ -105,6 +105,83 @@
           }
         }
       ]
+    },
+    "delivery": {
+      "description": "Delivery ledger (decision C): per wake event id, what reached the provider and in which request. full: the required payload was in a request that was sent; partial: a cut of it, with the byte range still owed in remaining; omitted: nothing of it.",
+      "type": [
+        "object",
+        "null"
+      ],
+      "propertyNames": {
+        "pattern": "^evt_[a-z0-9]+$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "ref",
+          "status",
+          "request",
+          "bytes_included",
+          "bytes_total"
+        ],
+        "properties": {
+          "ref": {
+            "$ref": "ref.schema.json"
+          },
+          "seq": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "comment": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "status": {
+            "enum": [
+              "full",
+              "partial",
+              "omitted"
+            ]
+          },
+          "request": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "bytes_included": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "bytes_total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "truncated": {
+            "const": true
+          },
+          "remaining": {
+            "type": "object",
+            "required": [
+              "from",
+              "to"
+            ],
+            "properties": {
+              "from": {
+                "type": "integer"
+              },
+              "to": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

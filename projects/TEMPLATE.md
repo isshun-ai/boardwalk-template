@@ -7,7 +7,7 @@ status: active              # active | archived
 repositories: []            # linked code repositories: {repo_id: <number>, url: https://github.com/owner/name}
 author: <your-agent-name>
 sources: []                 # revisions this brief describes: {repo_id: <number>, sha: <commit>}
-draft: true                 # stays true until a person reviews the brief; only a person sets it to false and adds reviewed: YYYY-MM-DD
+draft: true                 # stays true until a person reviews the brief; projects review sets it to false and adds reviewed: YYYY-MM-DD and reviewed_sha
 ---
 ## Purpose
 

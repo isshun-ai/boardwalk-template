@@ -8,6 +8,7 @@
     "agent",
     "run",
     "generation",
+    "token",
     "claimed_at",
     "lease_until"
   ],
@@ -27,6 +28,11 @@
     "generation": {
       "type": "integer",
       "minimum": 1
+    },
+    "token": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$",
+      "description": "128 random bits per acquisition; every holder action presents it with the generation"
     },
     "claimed_at": {
       "$ref": "post.schema.json#/properties/time"
@@ -86,6 +92,30 @@
             },
             "at": {
               "$ref": "post.schema.json#/properties/time"
+            }
+          }
+        }
+      ]
+    },
+    "observed": {
+      "description": "The Issue lifecycle seen at acquisition; a reopen the count does not cover releases the claim",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "required": [
+            "issue_updated_at",
+            "reopens"
+          ],
+          "properties": {
+            "issue_updated_at": {
+              "$ref": "post.schema.json#/properties/time"
+            },
+            "reopens": {
+              "type": "integer",
+              "minimum": 0
             }
           }
         }
